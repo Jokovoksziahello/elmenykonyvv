@@ -1,0 +1,9 @@
+{
+  "name": "emlek-konyv",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Böngészőben futó, saját emlékkönyv-szerkesztő.",
+  "scripts": {
+    "check": "node --check app.js"
+  }
+}

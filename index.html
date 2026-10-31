@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2ee">
+  <title>Emlékkönyv · Saját könyvszerkesztő</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Emlékkönyv szerkesztő">
+      <span class="brand-mark" aria-hidden="true">e</span>
+      <span><strong>emlékkönyv</strong><small>SAJÁT TÖRTÉNET, SAJÁT LAPOK</small></span>
+    </a>
+    <div class="top-actions">
+      <span id="save-status" class="save-status"><i></i> Mentve</span>
+      <button class="button button-quiet" id="undo-btn" title="Visszavonás (Ctrl+Z)" aria-label="Visszavonás" disabled>↶</button>
+      <button class="button button-quiet" id="redo-btn" title="Újra végrehajtás (Ctrl+Y)" aria-label="Újra végrehajtás" disabled>↷</button>
+      <button class="button button-quiet import-button" id="import-btn">Megnyitás</button>
+      <button class="button button-quiet" id="save-project-btn">Mentés fájlba</button>
+      <button class="button button-quiet" id="share-btn">Megosztás</button>
+      <button class="button button-primary" id="preview-btn"><span aria-hidden="true">◉</span> Előnézet</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="pages-panel" aria-label="Könyv oldalai">
+      <div class="panel-heading">
+        <div><span class="eyebrow">A KÖNYVED</span><h1>Oldalak</h1></div>
+        <span id="page-count" class="count-pill">10</span>
+      </div>
+      <div id="page-list" class="page-list"></div>
+      <button class="add-page-button" id="add-page-btn"><span>＋</span> Új oldal</button>
+      <div class="panel-footnote"><span class="lock-icon" aria-hidden="true">⌑</span> A könyved tartalma ezen az eszközön mentődik.</div>
+    </aside>
+
+    <section class="workspace" aria-label="Könyvszerkesztő">
+      <div class="workspace-toolbar">
+        <div class="page-navigation">
+          <button class="icon-button" id="prev-btn" aria-label="Előző oldal" title="Előző oldal">‹</button>
+          <span id="page-indicator">1 / 10</span>
+          <button class="icon-button" id="next-btn" aria-label="Következő oldal" title="Következő oldal">›</button>
+        </div>
+        <span class="canvas-hint">Jelölj ki egy elemet a szerkesztéshez · Húzd az elemeket a lapon</span>
+        <div class="zoom-tools">
+          <button class="icon-button" id="zoom-out" aria-label="Kicsinyítés">−</button>
+          <span id="zoom-label">100%</span>
+          <button class="icon-button" id="zoom-in" aria-label="Nagyítás">＋</button>
+        </div>
+      </div>
+      <div class="book-area">
+        <div class="book-shadow" aria-hidden="true"></div>
+        <div class="book-page" id="book-page" aria-label="Szerkeszthető könyvoldal"></div>
+      </div>
+      <div class="bottom-toolbar">
+        <button class="tool-button" id="add-text-btn"><span class="tool-icon">T</span><span>Szöveg</span></button>
+        <button class="tool-button" id="add-photo-btn"><span class="tool-icon">▧</span><span>Fénykép</span></button>
+        <button class="tool-button" id="add-sticker-btn"><span class="tool-icon">✳</span><span>Matrica</span></button>
+        <button class="tool-button" id="add-element-btn"><span class="tool-icon">◇</span><span>Saját kép</span></button>
+        <span class="toolbar-separator"></span>
+        <label class="background-picker">Oldal háttere <input id="background-color" type="color" value="#fffdf9" aria-label="Oldal háttérszíne"></label>
+      </div>
+    </section>
+
+    <aside class="properties-panel" aria-label="Elem beállításai">
+      <div id="layers-panel" class="layers-panel" hidden></div>
+      <div id="empty-inspector" class="empty-inspector">
+        <span class="inspector-symbol">✦</span>
+        <h2>Az oldalad, a te szabályaid</h2>
+        <p>Adj hozzá szöveget, fényképet vagy matricát, majd jelöld ki az elemet a részletek szerkesztéséhez.</p>
+        <div class="inspector-divider"></div>
+        <span class="eyebrow">OLDALBEÁLLÍTÁSOK</span>
+        <label class="field-label" for="page-background-control">Háttérszín</label>
+        <div class="color-field"><input id="page-background-control" type="color" value="#fffdf9"><span id="background-value">#fffdf9</span></div>
+        <p class="small-note">A könyv oldalai üresen indulnak. Minden tartalom a tiéd.</p>
+      </div>
+      <div id="element-inspector" class="element-inspector" hidden>
+        <div class="inspector-title">
+          <div><span class="eyebrow">KIVÁLASZTOTT ELEM</span><h2 id="element-type-title">Szöveg</h2></div>
+          <button class="icon-button close-inspector" id="deselect-btn" aria-label="Kijelölés megszüntetése">×</button>
+        </div>
+        <div id="text-controls" class="control-section" hidden>
+          <label class="field-label" for="element-text">Szövegtartalom</label>
+          <textarea id="element-text" rows="5" placeholder="Írd ide a saját szöveged…"></textarea>
+          <label class="field-label" for="font-family">Betűtípus</label>
+          <select id="font-family">
+            <option value="Georgia, serif">Georgia</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+            <option value="'Courier New', monospace">Courier</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+          </select>
+          <div class="field-row">
+            <label class="field-label">Betűméret <span id="font-size-value">24 px</span><input id="font-size" type="range" min="10" max="72" value="24"></label>
+          </div>
+          <label class="field-label">Szövegszín</label>
+          <div class="color-field"><input id="text-color" type="color" value="#35312e"><span id="text-color-value">#35312e</span></div>
+        </div>
+        <div id="image-controls" class="control-section" hidden>
+          <button class="button button-outline full-width" id="replace-image-btn">Kép cseréje</button>
+          <label class="field-label">Kép illesztése</label>
+          <select id="image-fit"><option value="contain">Teljes kép</option><option value="cover">Kitöltés</option></select>
+        </div>
+        <div id="sticker-controls" class="control-section" hidden>
+          <label class="field-label">Matrica színe</label>
+          <div class="color-field"><input id="sticker-color" type="color" value="#a57d67"><span id="sticker-color-value">#a57d67</span></div>
+        </div>
+        <div class="inspector-divider"></div>
+        <span class="eyebrow">ELHELYEZÉS</span>
+        <div class="field-row position-row">
+          <label class="field-label">Szélesség <input id="element-width" type="number" min="5" max="100" step="1"></label>
+          <label class="field-label">Magasság <input id="element-height" type="number" min="3" max="100" step="1"></label>
+        </div>
+        <label class="field-label rotation-control">Forgatás <span id="rotation-value">0°</span><input id="element-rotation" type="range" min="-180" max="180" value="0"></label>
+        <div class="element-actions">
+          <button class="button button-quiet" id="duplicate-btn">Másolat</button>
+          <button class="button button-danger" id="delete-element-btn">Törlés</button>
+        </div>
+      </div>
+      <input id="photo-input" type="file" accept="image/*" hidden>
+      <input id="project-input" type="file" accept=".json,application/json" hidden>
+      <input id="custom-image-input" type="file" accept="image/*" hidden>
+    </aside>
+  </main>
+  <div id="preview-overlay" class="preview-overlay" hidden>
+    <div class="preview-topbar">
+      <span class="preview-label">OLVASÓI ELŐNÉZET</span>
+      <div class="preview-actions"><button class="button button-quiet" id="export-pdf-btn">PDF mentése</button><button class="button button-close-preview" id="close-preview-btn">✕ <span class="sr-only">Bezárás</span></button></div>
+    </div>
+    <div class="preview-book-area">
+      <button class="preview-arrow" id="preview-prev" aria-label="Előző oldal">‹</button>
+      <div class="book-page preview-page" id="preview-page"></div>
+      <button class="preview-arrow" id="preview-next" aria-label="Következő oldal">›</button>
+    </div>
+    <div id="preview-page-indicator" class="preview-page-indicator"></div>
+  </div>
+  <div id="print-book" aria-hidden="true"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
