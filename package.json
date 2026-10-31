@@ -5,6 +5,7 @@
   "description": "Böngészőben futó, saját emlékkönyv-szerkesztő.",
   "scripts": {
     "start": "node server.js",
+    "build": "npm run check",
     "check": "node --check app.js && node --check server.js"
   }
 }
