@@ -40,7 +40,7 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  const filePath = path.resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+  const filePath = path.resolve(root, `.${pathname === '/' ? '/zara-birthday-book.html' : pathname}`);
   const relativePath = path.relative(root, filePath);
   if (relativePath === '..' || relativePath.startsWith(`..${path.sep}`) || path.isAbsolute(relativePath)) {
     response.writeHead(403);
