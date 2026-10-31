@@ -4,6 +4,7 @@
   "private": true,
   "description": "Böngészőben futó, saját emlékkönyv-szerkesztő.",
   "scripts": {
-    "check": "node --check app.js"
+    "start": "node server.js",
+    "check": "node --check app.js && node --check server.js"
   }
 }

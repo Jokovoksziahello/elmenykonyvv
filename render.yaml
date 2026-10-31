@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: emlek-konyv
+    runtime: static
+    buildCommand: npm run check
+    staticPublishPath: .
