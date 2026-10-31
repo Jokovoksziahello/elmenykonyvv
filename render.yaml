@@ -1,6 +1,6 @@
 services:
   - type: web
     name: emlek-konyv
-    runtime: static
-    buildCommand: npm run check
-    staticPublishPath: .
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
